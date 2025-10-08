@@ -1,0 +1,12 @@
+replicaCount: 2
+
+image:
+  repository: adityapaliwal1/node-express-rest
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: LoadBalancer
+  port: 3000
+
+resources: {}
