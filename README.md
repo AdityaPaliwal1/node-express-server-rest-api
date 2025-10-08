@@ -13,6 +13,8 @@ An easy way to get started with a Express server offering a REST API with Node.j
 
 - [node & npm](https://nodejs.org/en/)
 - [git](https://www.robinwieruch.de/git-essential-commands/)
+- [Docker](https://docs.docker.com/)
+- [Kubernetes](https://kubernetes.io/docs/home/)
 
 ## Installation
 
@@ -22,6 +24,23 @@ An easy way to get started with a Express server offering a REST API with Node.j
 - `npm start`
 - optional: include _.env_ in your _.gitignore_
 
+
+## Build and Run Docker Image
+- `docker build -t {imageName} .`
+- `docker run -p {hostport}:{containerport} -d {imageName} `
+
+## Test your application locally
+- Open docker desktop, click on your defined port
+- Example http://localhost:3000
+
+## Build K8s Cluster in AWS using Terraform
+- Run command `terraform init` in your terraform code directory
+- `terraform init` command prepares your local environment to effectively interact with your      infrastructure defined in config files.
+- Run `terraform plan` showing you exactly what changes terraform will make to your infrastructure to achieve desired state.
+- Run `terraform apply` is the translets your Iac code into desired infrastructure by communicating with API of your cloud provider (e.g. AWS,GCP).
+
+## Build and Push Docker Image 
+- This Repository has a workflow file which builds and push your repo's docker image to docker hub when someone is commiting or push something on master branch.
 ### GET Routes
 
 - visit http://localhost:3000
