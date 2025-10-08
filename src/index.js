@@ -1,9 +1,9 @@
-import 'dotenv/config';
-import cors from 'cors';
-import express from 'express';
+require('dotenv').config();
+const cors = require('cors');
+const express = require('express');
 
-import models from './models';
-import routes from './routes';
+const models = require('./models');
+const routes = require('./routes');
 
 const app = express();
 
@@ -34,6 +34,7 @@ app.use('/session', routes.session);
 app.use('/users', routes.user);
 app.use('/messages', routes.message);
 
+app.get('/', (req, res) => res.send('Hello World!'));
 // * Start * //
 
 app.listen(process.env.PORT, () =>

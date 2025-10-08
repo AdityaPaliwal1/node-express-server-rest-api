@@ -1,7 +1,6 @@
-import { v4 as uuidv4 } from 'uuid';
-import { Router } from 'express';
-
-const router = Router();
+const { v4: uuidv4 } = require('uuid');
+const express = require('express');
+const router = express.Router();
 
 router.get('/', (req, res) => {
   return res.send(Object.values(req.context.models.messages));
@@ -50,4 +49,4 @@ router.put('/:messageId', (req, res) => {
   return res.send(updatedMessage);
 })
 
-export default router;
+module.exports =router;
