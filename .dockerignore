@@ -1,3 +1,8 @@
 node_modules
  npm-debug.log
  .vscode
+ Dockerfile
+ .git
+.dockerignore
+infra/.terraform
+infra/.terraform.lock.hd

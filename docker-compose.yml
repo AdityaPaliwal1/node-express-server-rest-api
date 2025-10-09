@@ -3,13 +3,14 @@ version: '3.9'
 services:
   node-app:
     build: .
-    container_name: my-app
+    container_name: node-express-server
     ports:
       - "3000:3000"
     volumes:
-      - ./:/app   # Mount local code for live updates or for hot reloading (optional)
+      - ./:/app   # Mount local code for live updates or for hot reloading
       - /app/node_modules # Prevent overwriting node_modules
     environment:
       - NODE_ENV=development
+      - PORT=3000
 
 

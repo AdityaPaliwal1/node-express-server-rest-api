@@ -25,38 +25,67 @@ An easy way to get started with a Express server offering a REST API with Node.j
 - optional: include _.env_ in your _.gitignore_
 
 
-## Build and Run Docker Image
-- `docker build -t {imageName} .`
-- `docker run -p {hostport}:{containerport} -d {imageName} `
+## Build and Run Docker Image locally using DockerFile
+- `docker build -t <imageName> .`
+- `docker run -env PORT=3000 -p <hostport>:<containerport> -d <imageName> `
 
-## Test your application locally
-- Open docker desktop, click on your defined port
-- Example http://localhost:3000
+## Build and Run Docker Image locally using docker-compose
+- `docker compose up `
+
+## Test your application locally with all endpoints
+- Go to http://localhost:3000
+- Test endpoint :
+           - /messages
+           - /messages/1
+           - /users
+           - /users/1
+- Test Request using curl :
+  - `curl -X POST -H "Content-Type:application/json" http://localhost:3000/messages -d '{"text":"Hi again, World"}'`
+
+  - `curl -X DELETE -H "Content-Type:application/json" http://localhost:3000/messages/1`
+
+
+## Build and Push Docker Image via CI
+- This Repository has a workflow file which builds and push your repo's docker image to docker hub when someone is commiting or push something on master branch.
+
+## Test Image push by CI
+- Pull image from docker hub `docker pull adityapaliwal1/node-express-rest:latest`
+- Run image and check by  ` docker run -env PORT=3000 -p 3000:3000 --name <container_name> adityapaliwal1/node-express-rest:latest`
+
 
 ## Build K8s Cluster in AWS using Terraform
+- Run `terraform login` which streamlines the authentication and allowing us to leverage terraform services by stroring API token in local credential file.
 - Run command `terraform init` in your terraform code directory
 - `terraform init` command prepares your local environment to effectively interact with your      infrastructure defined in config files.
 - Run `terraform plan` showing you exactly what changes terraform will make to your infrastructure to achieve desired state.
 - Run `terraform apply` is the translets your Iac code into desired infrastructure by communicating with API of your cloud provider (e.g. AWS,GCP).
 
-## Build and Push Docker Image 
-- This Repository has a workflow file which builds and push your repo's docker image to docker hub when someone is commiting or push something on master branch.
-### GET Routes
 
-- visit http://localhost:3000
-  - /messages
-  - /messages/1
-  - /users
-  - /users/1
+## Installing Kind on Windows/linux/macos
+- Windows `choco install kind`
+- Linux `sudo apt install kind`
+- MacOS ` brew install kind`  
 
-### Beyond GET Routes
+## Creating Cluster on Kind
+- `kind create cluster --name {nameofcluster}` for creating a kubernetes cluster.
+- `kind get nodes ` provides info about cluster node status
 
-#### CURL
+## Deploy Image on Kind cluster using Helm Chart
+- Run `helm install release-name .` in the helm directory of your project.
+- Run `kind load docker-image adityapaliwal1/node-express-rest:latest --name node-express-cluster` load docker image into kind cluster.
+- Now that Kind knows about the image, install your Helm chart into that cluster:
+   - `helm install my-release ./node-express-rest`
 
-- Create a message with:
-  - `curl -X POST -H "Content-Type:application/json" http://localhost:3000/messages -d '{"text":"Hi again, World"}'`
-- Delete a message with:
-  - `curl -X DELETE -H "Content-Type:application/json" http://localhost:3000/messages/1`
+## Fetching Pods Details
+- Run `kubectl get pods` provides list of pods
+- Run `kubectl describe pod <pod-name>`
+
+#### as we defined loadbalancer as service type in values.yaml
+Kind doesn’t support real LoadBalancers by default, you can port-forward instead
+- `kubectl port-forward service/my-release-node-express-rest 3000:3000`
+
+##### Open Your browser
+- http://localhost:3000
 
 #### Postman
 

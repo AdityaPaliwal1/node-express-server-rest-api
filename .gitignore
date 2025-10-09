@@ -1,3 +1,5 @@
 logfile
 infra/.terraform/
 node_modules/
+.env
+infra/.terraform.lock.hcl

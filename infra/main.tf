@@ -1,27 +1,32 @@
 terraform {
-  required_version = ">= 1.13.3"
+  required_version = ">= 1.6.0"
+
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.0"
+      version = ">= 6.0.0"
     }
   }
 }
 
-
-# Defining the Provider (Amazon Web Service)
-
+# -----------------------------
+# AWS Provider Configuration
+# -----------------------------
 provider "aws" { 
   region = var.aws_region
 }
 
-############################
-# Create a VPC using module
-############################
+# -----------------------------
+# Fetch Availability Zones
+# -----------------------------
+data "aws_availability_zones" "available" {}
 
+# -----------------------------
+# Create VPC using module
+# -----------------------------
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = ">= 4.0.0"
+  version = ">= 5.0.0"
 
   name = "${var.cluster_name}-vpc"
   cidr = "10.0.0.0/16"
@@ -39,39 +44,40 @@ module "vpc" {
   }
 }
 
-data "aws_availability_zones" "available" {}
-
-############################
-# EKS cluster using module
-############################
+# -----------------------------
+# Create EKS cluster using module
+# -----------------------------
 module "eks" {
-  source          = "terraform-aws-modules/eks/aws"
-  version         = ">= 20.0.0"
+  source  = "terraform-aws-modules/eks/aws"
+  version = "~> 21.0"
 
-  cluster_name    = var.cluster_name
-  cluster_version = var.k8s_version
-  subnets         = module.vpc.private_subnets
-  vpc_id          = module.vpc.vpc_id
-  enable_irsa     = true
+  name               = var.cluster_name
+  kubernetes_version = "1.33"
 
-  eks_managed_node_groups = {
-    default = {
-      desired_capacity = 2
-      max_capacity     = 3
-      min_capacity     = 1
-      instance_types   = ["t3.medium"]
-    }
+  # Optional
+  endpoint_public_access = true
+
+  # Optional: Adds the current caller identity as an administrator via cluster access entry
+  enable_cluster_creator_admin_permissions = true
+
+  compute_config = {
+    enabled    = false
+    node_pools = ["general-purpose"]
   }
+
+  vpc_id     = "vpc-1234556abcdef"
+  subnet_ids = ["subnet-abcde012", "subnet-bcde012a", "subnet-fghi345a"]
 
   tags = {
     Environment = "dev"
-    ManagedBy   = "terraform"
+    Terraform   = "true"
   }
 }
 
-############################
+
+# -----------------------------
 # Outputs
-############################
+# -----------------------------
 output "cluster_endpoint" {
   value = module.eks.cluster_endpoint
 }
